@@ -88,15 +88,15 @@ class HomeComponentState extends State<HomeComponent> {
       new Padding(
         padding: new EdgeInsets.only(bottom: 35.0),
         child: new Image(
-            image: new AssetImage("assets/images/logo_fluro.png"),
+            image: new AssetImage("assets/images/barflashcard_logo.png"),
             width: 200.0),
       ),
-      menuButton(context, "Native Animation", "native"),
-      menuButton(context, "Preset (In from Left)", "preset-from-left"),
-      menuButton(context, "Preset (Fade In)", "preset-fade"),
-      menuButton(context, "Custom Transition", "custom"),
-      menuButton(context, "Navigator Result", "pop-result"),
-      menuButton(context, "Function Call", "function-call"),
+      menuButton(context, "Cocktails", "native"),
+      menuButton(context, "Beers", "preset-from-left"),
+      menuButton(context, "Wine", "preset-fade"),
+      menuButton(context, "Non-Alcoholic", "custom"),
+      // menuButton(context, "Navigator Result", "pop-result"),
+      // menuButton(context, "Function Call", "function-call"),
       new Padding(
         padding: new EdgeInsets.only(top: 65.0, left: 60.0, right: 60.0),
         child: new Center(
@@ -123,7 +123,7 @@ class HomeComponentState extends State<HomeComponent> {
       padding: new EdgeInsets.all(4.0),
       child: new ConstrainedBox(
         constraints: new BoxConstraints(minHeight: 42.0),
-        child: new FlatButton(
+        child: new RaisedButton(
           highlightColor: const Color(0x11FFFFFF),
           splashColor: const Color(0x22FFFFFF),
           child: new Text(

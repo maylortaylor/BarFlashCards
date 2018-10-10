@@ -1,3 +1,5 @@
+import 'package:barflashcards/components/cards/flash_card.dart';
+
 import '../helpers/color_helpers.dart';
 import '../components/cards/cocktails.dart';
 import '../components/home/home_component.dart';
@@ -8,6 +10,19 @@ import 'package:flutter/material.dart';
 var rootHandler = new Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
   return new HomeComponent();
+});
+
+var flashCardHandler = new Handler(
+    handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+  String cocktail = params["cocktail"]?.first;
+  String colorHex = params["color_hex"]?.first;
+  String result = params["result"]?.first;
+  Color color = new Color(0xFFFFFFFF);
+  if (colorHex != null && colorHex.length > 0) {
+    color = new Color(ColorHelpers.fromHexString(colorHex));
+  }
+  return new FlashCardComponent(
+      cocktail: cocktail, color: color, result: result);
 });
 
 var demoRouteHandler = new Handler(
