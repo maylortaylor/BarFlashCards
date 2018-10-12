@@ -4,7 +4,7 @@ A new Flutter project.
 
 ## Getting Started
 
-Navigate to the root folder `./client/barflashcards`.
+Navigate to the root folder `./barflashcards`.
 
 ```
 flutter packages get

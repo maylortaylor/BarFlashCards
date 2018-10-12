@@ -19,27 +19,27 @@ class CocktailsComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var cocktailsWidgets = <Widget>[
-      new Padding(
-        padding: new EdgeInsets.only(bottom: 35.0),
-        child: new Image(
-            image: new AssetImage("assets/images/barflashcard_logo.png"),
+      Padding(
+        padding: EdgeInsets.only(bottom: 35.0),
+        child: Image(
+            image: AssetImage("assets/images/barflashcard_logo.png"),
             width: 200.0),
       ),
       menuButton(context, "Gin", "native"),
       menuButton(context, "Tequila", "preset-from-left"),
       menuButton(context, "Vodka", "preset-fade"),
       menuButton(context, "Whiskey", "custom"),
-      new Padding(
-        padding: new EdgeInsets.only(top: 65.0, left: 60.0, right: 60.0),
-        child: new Center(
-          child: new ConstrainedBox(
-            constraints: new BoxConstraints.tightFor(height: 60.0),
-            child: new RaisedButton(
+      Padding(
+        padding: EdgeInsets.only(top: 65.0, left: 60.0, right: 60.0),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints.tightFor(height: 60.0),
+            child: RaisedButton(
               highlightColor: const Color(0x11FFFFFF),
               splashColor: const Color(0x22FFFFFF),
-              child: new Text(
+              child: Text(
                 "Start Over",
-                style: new TextStyle(
+                style: TextStyle(
                   color: const Color(0xAA001133),
                 ),
               ),
@@ -52,9 +52,9 @@ class CocktailsComponent extends StatelessWidget {
       )
     ];
 
-    return new Material(
+    return Material(
       color: color,
-      child: new Column(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: cocktailsWidgets,
       ),
@@ -88,7 +88,10 @@ Widget menuButton(BuildContext context, String title, String key) {
 // actions
 void tappedFlashCardButton(BuildContext context, String key, String title) {
   print('tapped flashcard -- $title -- $key');
-  Application.router.navigateTo(context, "/flashcard");
+  final String hexCode = "#7d41f4";
+
+  Application.router
+      .navigateTo(context, "/flashcard?cocktail=$title&color_hex=$hexCode");
 }
 
 void tappedStartOverButton(BuildContext context, String key) {

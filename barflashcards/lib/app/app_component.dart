@@ -1,7 +1,7 @@
-import '../../config/application.dart';
+import '../config/application.dart';
 import 'package:flutter/material.dart';
 import 'package:fluro/fluro.dart';
-import '../../config/routes.dart';
+import '../config/routes.dart';
 
 class AppComponent extends StatefulWidget {
   @override
@@ -19,11 +19,10 @@ class AppComponentState extends State<AppComponent> {
 
   @override
   Widget build(BuildContext context) {
-    final app = new MaterialApp(
-      title: 'Bar Flash Cards',
-      theme: new ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+    final app = MaterialApp(
+      // title: 'Bar Flash Cards',
+      // theme: new ThemeData(
+      //     primarySwatch: Colors.deepPurple, accentColor: Colors.blueAccent),
       onGenerateRoute: Application.router.generator,
     );
     print("initial route = ${app.initialRoute}");

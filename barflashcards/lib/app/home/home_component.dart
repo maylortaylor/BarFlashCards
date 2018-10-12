@@ -85,10 +85,10 @@ class HomeComponentState extends State<HomeComponent> {
   @override
   Widget build(BuildContext context) {
     var menuWidgets = <Widget>[
-      new Padding(
-        padding: new EdgeInsets.only(bottom: 35.0),
-        child: new Image(
-            image: new AssetImage("assets/images/barflashcard_logo.png"),
+      Padding(
+        padding: EdgeInsets.only(bottom: 35.0),
+        child: Image(
+            image: AssetImage("assets/images/barflashcard_logo.png"),
             width: 200.0),
       ),
       menuButton(context, "Cocktails", "native"),
@@ -97,10 +97,10 @@ class HomeComponentState extends State<HomeComponent> {
       menuButton(context, "Non-Alcoholic", "custom"),
       // menuButton(context, "Navigator Result", "pop-result"),
       // menuButton(context, "Function Call", "function-call"),
-      new Padding(
-        padding: new EdgeInsets.only(top: 65.0, left: 60.0, right: 60.0),
-        child: new Center(
-          child: new ConstrainedBox(
+      Padding(
+        padding: EdgeInsets.only(top: 65.0, left: 60.0, right: 60.0),
+        child: Center(
+          child: ConstrainedBox(
             constraints: new BoxConstraints.tightFor(height: 60.0),
             child: deepLinkWidget(context),
           ),
@@ -108,9 +108,9 @@ class HomeComponentState extends State<HomeComponent> {
       ),
     ];
 
-    return new Material(
-      color: const Color(0xFF00D6F7),
-      child: new Column(
+    return Material(
+      color: Colors.deepPurple,
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: menuWidgets,
       ),
@@ -119,16 +119,16 @@ class HomeComponentState extends State<HomeComponent> {
 
   // helpers
   Widget menuButton(BuildContext context, String title, String key) {
-    return new Padding(
-      padding: new EdgeInsets.all(4.0),
-      child: new ConstrainedBox(
-        constraints: new BoxConstraints(minHeight: 42.0),
-        child: new RaisedButton(
+    return Padding(
+      padding: EdgeInsets.all(4.0),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(minHeight: 42.0),
+        child: RaisedButton(
           highlightColor: const Color(0x11FFFFFF),
           splashColor: const Color(0x22FFFFFF),
-          child: new Text(
+          child: Text(
             title,
-            style: new TextStyle(
+            style: TextStyle(
               color: const Color(0xAA001133),
             ),
           ),
@@ -173,6 +173,7 @@ class HomeComponentState extends State<HomeComponent> {
       if (result != null) {
         route = "$route&result=$result";
       }
+      print("tapped button --> $route");
 
       Application.router
           .navigateTo(context, route, transition: transitionType)
