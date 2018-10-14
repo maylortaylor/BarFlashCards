@@ -11,77 +11,6 @@ class HomeComponent extends StatefulWidget {
 }
 
 class HomeComponentState extends State<HomeComponent> {
-  var _deepLinkOpacity = 1.0;
-  final _deepLinkURL =
-      "fluro://deeplink?path=/message&mesage=fluro%20rocks%21%21";
-  final _daysOfWeek = const [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday"
-  ];
-
-  Widget deepLinkWidget(BuildContext context) {
-    return new Stack(
-      children: <Widget>[
-        // copied widget
-        new AnimatedOpacity(
-          opacity: (_deepLinkOpacity - 1.0).abs(),
-          duration: new Duration(milliseconds: 400),
-          child: new Center(
-            child: new Text(
-              "Copied to clipboard!",
-              style: new TextStyle(
-                fontSize: 14.0,
-                color: const Color(0xFFFFFFFF),
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-        ),
-        // button widget
-        new AnimatedOpacity(
-          opacity: _deepLinkOpacity,
-          duration: new Duration(milliseconds: 250),
-          child: new Center(
-            child: new FlatButton(
-              highlightColor: const Color(0x11FFFFFF),
-              splashColor: const Color(0x22FFFFFF),
-              onPressed: () {
-                if (_deepLinkOpacity == 1.0) {
-                  new Timer(new Duration(milliseconds: 2000), () {
-                    setState(() {
-                      _deepLinkOpacity = 1.0;
-                    });
-                  });
-                  setState(() {
-                    _deepLinkOpacity = 0.0;
-                  });
-                  final clipboardData = new ClipboardData(text: _deepLinkURL);
-                  Clipboard.setData(clipboardData);
-                }
-              },
-              child: new Padding(
-                padding: new EdgeInsets.all(8.0),
-                child: new Text(
-                  "Click here to copy a deep link url to the clipboard",
-                  textAlign: TextAlign.center,
-                  style: new TextStyle(
-                    fontSize: 12.0,
-                    color: const Color(0xCCFFFFFF),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     var menuWidgets = <Widget>[
@@ -91,21 +20,11 @@ class HomeComponentState extends State<HomeComponent> {
             image: AssetImage("assets/images/barflashcard_logo.png"),
             width: 200.0),
       ),
-      menuButton(context, "Cocktails", "native"),
-      menuButton(context, "Beers", "preset-from-left"),
-      menuButton(context, "Wine", "preset-fade"),
-      menuButton(context, "Non-Alcoholic", "custom"),
-      // menuButton(context, "Navigator Result", "pop-result"),
-      // menuButton(context, "Function Call", "function-call"),
-      Padding(
-        padding: EdgeInsets.only(top: 65.0, left: 60.0, right: 60.0),
-        child: Center(
-          child: ConstrainedBox(
-            constraints: new BoxConstraints.tightFor(height: 60.0),
-            child: deepLinkWidget(context),
-          ),
-        ),
-      ),
+      menuButton(context, "Cocktails", "cocktails", TransitionType.native),
+      menuButton(context, "Beers", "beers", TransitionType.inFromRight),
+      menuButton(context, "Wine", "wines", TransitionType.inFromLeft),
+      menuButton(context, "Non-Alcoholic", "non-alcoholic",
+          TransitionType.inFromBottom)
     ];
 
     return Material(
@@ -118,7 +37,8 @@ class HomeComponentState extends State<HomeComponent> {
   }
 
   // helpers
-  Widget menuButton(BuildContext context, String title, String key) {
+  Widget menuButton(BuildContext context, String title, String destination,
+      TransitionType transitionType) {
     return Padding(
       padding: EdgeInsets.all(4.0),
       child: ConstrainedBox(
@@ -133,7 +53,7 @@ class HomeComponentState extends State<HomeComponent> {
             ),
           ),
           onPressed: () {
-            tappedMenuButton(context, key);
+            tappedMenuButton(context, transitionType, destination);
           },
         ),
       ),
@@ -141,71 +61,31 @@ class HomeComponentState extends State<HomeComponent> {
   }
 
   // actions
-  void tappedMenuButton(BuildContext context, String key) {
+  void tappedMenuButton(BuildContext context, TransitionType transitionType,
+      [String destination = ""]) {
     String message = "";
     String hexCode = "#FFFFFF";
-    String result;
-    TransitionType transitionType = TransitionType.native;
-    if (key != "custom" && key != "function-call") {
-      if (key == "native") {
-        hexCode = "#F76F00";
-        message =
-            "This screen should have appeared using the default flutter animation for the current OS";
-      } else if (key == "preset-from-left") {
-        hexCode = "#5BF700";
-        message =
-            "This screen should have appeared with a slide in from left transition";
-        transitionType = TransitionType.inFromLeft;
-      } else if (key == "preset-fade") {
-        hexCode = "#F700D2";
-        message = "This screen should have appeared with a fade in transition";
-        transitionType = TransitionType.fadeIn;
-      } else if (key == "pop-result") {
-        transitionType = TransitionType.native;
-        hexCode = "#7d41f4";
-        message =
-            "When you close this screen you should see the current day of the week";
-        result = "Today is ${_daysOfWeek[new DateTime.now().weekday - 1]}!";
-      }
 
-      String route = "/demo?message=$message&color_hex=$hexCode";
+    String route = "/$destination?message=$message&color_hex=$hexCode";
 
-      if (result != null) {
-        route = "$route&result=$result";
-      }
-      print("tapped button --> $route");
-
-      Application.router
-          .navigateTo(context, route, transition: transitionType)
-          .then((result) {
-        if (key == "pop-result") {
-          Application.router.navigateTo(context, "/demo/func?message=$result");
-        }
-      });
-    } else if (key == "custom") {
-      hexCode = "#DFF700";
-      message =
-          "This screen should have appeared with a crazy custom transition";
-      var transition = (BuildContext context, Animation<double> animation,
-          Animation<double> secondaryAnimation, Widget child) {
-        return new ScaleTransition(
-          scale: animation,
-          child: new RotationTransition(
-            turns: animation,
-            child: child,
-          ),
-        );
-      };
-      Application.router.navigateTo(
-        context,
-        "/demo?message=$message&color_hex=$hexCode",
-        transition: TransitionType.custom,
-        transitionBuilder: transition,
-        transitionDuration: const Duration(milliseconds: 600),
+    var customTransition = (BuildContext context, Animation<double> animation,
+        Animation<double> secondaryAnimation, Widget child) {
+      return ScaleTransition(
+        scale: animation,
+        child: RotationTransition(
+          turns: animation,
+          child: child,
+        ),
       );
-    } else {
-      message = "You tapped the function button!";
-      Application.router.navigateTo(context, "/demo/func?message=$message");
-    }
+    };
+
+    print("Routing --> $route");
+    Application.router.navigateTo(
+      context,
+      route,
+      transition: TransitionType.custom,
+      transitionBuilder: customTransition,
+      transitionDuration: const Duration(milliseconds: 600),
+    );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:barflashcards/app/cards/flash_card.dart';
+import 'package:barflashcards/app/sections/beers.dart';
 import '../helpers/color_helpers.dart';
-import '../app/cards/cocktails.dart';
+import '../app/sections/cocktails.dart';
 import '../app/home/home_component.dart';
 import 'package:flutter/painting.dart';
 import 'package:fluro/fluro.dart';
@@ -25,7 +26,7 @@ var flashCardHandler = new Handler(
       cocktail: cocktail, color: color, result: result);
 });
 
-var cocktailRouteHandler = new Handler(
+var cocktailsRouteHandler = new Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
   String message = params["message"]?.first;
   String colorHex = params["color_hex"]?.first;
@@ -36,6 +37,18 @@ var cocktailRouteHandler = new Handler(
   }
   print('flash card handler -- $message - $color - $result');
   return CocktailsComponent(message: message, color: color, result: result);
+});
+var beersRouteHandler = new Handler(
+    handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+  String message = params["message"]?.first;
+  String colorHex = params["color_hex"]?.first;
+  String result = params["result"]?.first;
+  Color color = Color(0xFFFFFFFF);
+  if (colorHex != null && colorHex.length > 0) {
+    color = Color(ColorHelpers.fromHexString(colorHex));
+  }
+  print('flash card handler -- $message - $color - $result');
+  return BeersComponent();
 });
 
 var demoFunctionHandler = new Handler(
@@ -70,19 +83,3 @@ var demoFunctionHandler = new Handler(
         },
       );
     });
-
-// /// Handles deep links into the app
-// /// To test on Android:
-// ///
-// /// `adb shell am start -W -a android.intent.action.VIEW -d "fluro://deeplink?path=/message&mesage=fluro%20rocks%21%21" com.goposse.fluro`
-// var deepLinkHandler = Handler(
-//     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
-//   String colorHex = params["color_hex"]?.first;
-//   String result = params["result"]?.first;
-//   Color color = Color(0xFFFFFFFF);
-//   if (colorHex != null && colorHex.length > 0) {
-//     color = Color(ColorHelpers.fromHexString(colorHex));
-//   }
-//   return CocktailsComponent(
-//       message: "DEEEEEP LINK!!!", color: color, result: result);
-// });

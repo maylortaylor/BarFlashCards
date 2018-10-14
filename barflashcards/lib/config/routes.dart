@@ -5,6 +5,7 @@ import './route_handlers.dart';
 class Routes {
   static String root = "/";
   static String cocktails = "/cocktails";
+  static String beers = "/beers";
   static String flashCard = "/flashcard";
   // static String demoFunc = "/demo/func";
   // static String deepLink = "/message";
@@ -15,7 +16,8 @@ class Routes {
       print("ROUTE WAS NOT FOUND !!!");
     });
     router.define(root, handler: rootHandler);
-    router.define(cocktails, handler: cocktailRouteHandler);
+    router.define(beers, handler: beersRouteHandler);
+    router.define(cocktails, handler: cocktailsRouteHandler);
     router.define(flashCard, handler: flashCardHandler);
     // router.define(demoSimple, handler: demoRouteHandler);
     // router.define(deepLink, handler: deepLinkHandler);
