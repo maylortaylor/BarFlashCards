@@ -3,12 +3,12 @@ import 'package:barflashcards/models/drinkCategories.dart';
 import 'package:barflashcards/database/dbhelper.dart';
 import 'package:flutter/material.dart';
 
-class BeersComponent extends StatefulWidget {
+class WinesComponent extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _BeersComponentState();
+  State<StatefulWidget> createState() => _WinesComponentState();
 }
 
-class _BeersComponentState extends State<BeersComponent> {
+class _WinesComponentState extends State<WinesComponent> {
   BuildContext _ctx;
   final scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -27,17 +27,17 @@ class _BeersComponentState extends State<BeersComponent> {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text("Beers"),
+          title: Text("Wines"),
         ),
         key: scaffoldKey,
-        body: Container(child: Center(child: beerListItems())),
+        body: Container(child: Center(child: winesListItems())),
         floatingActionButton: FloatingActionButton(
             onPressed: null,
-            tooltip: "Add new Beer",
+            tooltip: "Add new Wine",
             child: new Icon(Icons.add)));
   }
 
-  ListView beerListItems() {
+  ListView winesListItems() {
     return ListView.builder(
         itemCount: count,
         itemBuilder: (BuildContext context, int position) {

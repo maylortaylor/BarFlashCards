@@ -1,29 +1,39 @@
 import 'package:barflashcards/app/cards/flash_card.dart';
+import 'package:barflashcards/app/login/login_component.dart';
+import 'package:barflashcards/app/home/home_component.dart';
 import 'package:barflashcards/app/sections/beers.dart';
+import 'package:barflashcards/app/sections/wines.dart';
+import 'package:barflashcards/app/sections/nonalcoholic.dart';
+import 'package:barflashcards/app/sections/cocktails.dart';
 import '../helpers/color_helpers.dart';
-import '../app/sections/cocktails.dart';
-import '../app/home/home_component.dart';
 import 'package:flutter/painting.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 
 var rootHandler = new Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+  debugPrint('home handler -- $params');
+
   return new HomeComponent();
 });
 
-var flashCardHandler = new Handler(
+var loginHandler = new Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
-  String cocktail = params["cocktail"]?.first;
-  String colorHex = params["color_hex"]?.first;
-  String result = params["result"]?.first;
-  Color color = new Color(0xFFFFFFFF);
-  if (colorHex != null && colorHex.length > 0) {
-    color = new Color(ColorHelpers.fromHexString(colorHex));
-  }
-  print('flash card handler -- $cocktail - $color - $result');
-  return new FlashCardComponent(
-      cocktail: cocktail, color: color, result: result);
+  debugPrint('login handler -- $params');
+
+  return new LoginComponent();
+});
+
+var winesRouteHandler = new Handler(
+    handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+  debugPrint('wines handler -- $params');
+  return WinesComponent();
+});
+
+var nonAlcoholicsRouteHandler = new Handler(
+    handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+  debugPrint('non-alcoholic handler -- $params');
+  return NonAlcoholicsComponent();
 });
 
 var cocktailsRouteHandler = new Handler(
@@ -35,20 +45,27 @@ var cocktailsRouteHandler = new Handler(
   if (colorHex != null && colorHex.length > 0) {
     color = Color(ColorHelpers.fromHexString(colorHex));
   }
-  print('flash card handler -- $message - $color - $result');
+  debugPrint('cocktails handler -- $message - $color - $result');
   return CocktailsComponent(message: message, color: color, result: result);
 });
 var beersRouteHandler = new Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
-  String message = params["message"]?.first;
+  debugPrint('beers handler -- $params');
+  return BeersComponent();
+});
+
+var flashCardHandler = new Handler(
+    handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+  String cocktail = params["cocktail"]?.first;
   String colorHex = params["color_hex"]?.first;
   String result = params["result"]?.first;
-  Color color = Color(0xFFFFFFFF);
+  Color color = new Color(0xFFFFFFFF);
   if (colorHex != null && colorHex.length > 0) {
-    color = Color(ColorHelpers.fromHexString(colorHex));
+    color = new Color(ColorHelpers.fromHexString(colorHex));
   }
-  print('flash card handler -- $message - $color - $result');
-  return BeersComponent();
+  debugPrint('flash card handler -- $cocktail - $color - $result');
+  return new FlashCardComponent(
+      cocktail: cocktail, color: color, result: result);
 });
 
 var demoFunctionHandler = new Handler(

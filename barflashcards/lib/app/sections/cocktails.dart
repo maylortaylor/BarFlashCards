@@ -1,9 +1,12 @@
-import '../../config/application.dart';
-import '../../helpers/color_helpers.dart';
-import 'package:flutter/material.dart';
+import 'package:barflashcards/app/cards/flash_card.dart';
+import 'package:barflashcards/app/home/home_component.dart';
 import 'package:fluro/fluro.dart';
 
-class CocktailsComponent extends StatelessWidget {
+import '../../helpers/color_helpers.dart';
+import 'package:flutter/material.dart';
+import 'package:barflashcards/config/routes.dart';
+
+class CocktailsComponent extends StatefulWidget {
   CocktailsComponent(
       {String message = "Cocktails",
       Color color = const Color(0xFFFFFFFF),
@@ -17,7 +20,17 @@ class CocktailsComponent extends StatelessWidget {
   final String result;
 
   @override
+  _CocktailsComponentState createState() => new _CocktailsComponentState();
+}
+
+class _CocktailsComponentState extends State<CocktailsComponent> {
+  BuildContext _ctx;
+  final scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  @override
   Widget build(BuildContext context) {
+    _ctx = context;
+
     var cocktailsWidgets = <Widget>[
       Padding(
         padding: EdgeInsets.only(bottom: 35.0),
@@ -52,12 +65,21 @@ class CocktailsComponent extends StatelessWidget {
       )
     ];
 
-    return Material(
-      color: color,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: cocktailsWidgets,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Cocktails"),
       ),
+      key: scaffoldKey,
+      body: Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: cocktailsWidgets,
+      )
+      ),
+      floatingActionButton: FloatingActionButton(
+            onPressed: null,
+            tooltip: "Add new Cocktail",
+            child: new Icon(Icons.add)) 
     );
   }
 }
@@ -87,14 +109,13 @@ Widget menuButton(BuildContext context, String title, String key) {
 
 // actions
 void tappedFlashCardButton(BuildContext context, String key, String title) {
-  print('tapped flashcard -- $title -- $key');
-  final String hexCode = "#7d41f4";
-
-  Application.router
-      .navigateTo(context, "/flashcard?cocktail=$title&color_hex=$hexCode");
+  debugPrint('tapped flashcard -- $title -- $key');
+  Routes.navigateTo(
+      context: context, route: key, transition: TransitionType.native);
 }
 
 void tappedStartOverButton(BuildContext context, String key) {
   print('tapped start over -- $key');
-  Application.router.navigateTo(context, "/");
+  Routes.navigateTo(
+      context: context, route: key, transition: TransitionType.native);
 }

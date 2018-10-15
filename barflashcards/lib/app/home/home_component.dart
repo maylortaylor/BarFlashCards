@@ -1,7 +1,10 @@
 import 'dart:async';
 
-import '../../config/application.dart';
+import 'package:barflashcards/config/application.dart';
+import 'package:barflashcards/config/routes.dart';
+import 'package:barflashcards/database/dbhelper.dart';
 import 'package:fluro/fluro.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -11,6 +14,21 @@ class HomeComponent extends StatefulWidget {
 }
 
 class HomeComponentState extends State<HomeComponent> {
+  DbHelper db;
+
+  @override
+  void dispose() {
+    db.closeDb();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    db = DbHelper();
+    db.initializeDb();
+  }
+
   @override
   Widget build(BuildContext context) {
     var menuWidgets = <Widget>[
@@ -24,7 +42,8 @@ class HomeComponentState extends State<HomeComponent> {
       menuButton(context, "Beers", "beers", TransitionType.inFromRight),
       menuButton(context, "Wine", "wines", TransitionType.inFromLeft),
       menuButton(context, "Non-Alcoholic", "non-alcoholic",
-          TransitionType.inFromBottom)
+          TransitionType.inFromBottom),
+      menuButton(context, "Login", "login", TransitionType.native)
     ];
 
     return Material(
@@ -79,13 +98,7 @@ class HomeComponentState extends State<HomeComponent> {
       );
     };
 
-    print("Routing --> $route");
-    Application.router.navigateTo(
-      context,
-      route,
-      transition: TransitionType.custom,
-      transitionBuilder: customTransition,
-      transitionDuration: const Duration(milliseconds: 600),
-    );
+    Routes.navigateTo(
+        context: context, route: route, transition: TransitionType.native);
   }
 }
