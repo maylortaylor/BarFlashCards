@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "301681909172",
+    "firebase_url": "https://barflashcards-4b756.firebaseio.com",
+    "project_id": "barflashcards-4b756",
+    "storage_bucket": "barflashcards-4b756.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:301681909172:android:488301e034a8fcc3",
+        "android_client_info": {
+          "package_name": "com.example.barflashcards"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "301681909172-1qrn498oahj2qttbq3ms0o54ub2n14uh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDT-GQa-fXIHwdZ9bcM8scAuBqU6b67fb8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
