@@ -1,8 +1,8 @@
 import 'package:meta/meta.dart';
 
 class Drink {
-  int id;
-  String name, description, dateAdded, category;
+  DateTime dateAdded;
+  String id, name, description, category;
 
   Drink(
       {@required this.name,

@@ -20,53 +20,51 @@ class DbSeeder {
     Drink whiskey_coke = Drink(
         name: "Whiskey & Coke",
         category: DrinkCategory.Cocktail.toString(),
-        dateAdded: today.toString());
+        dateAdded: today);
     result = helper.insertDrink(whiskey_coke);
     Drink gin_tonic = Drink(
         name: "Gin & Tonic",
         category: DrinkCategory.Cocktail.toString(),
-        dateAdded: today.toString());
+        dateAdded: today);
     result = helper.insertDrink(gin_tonic);
     Drink vodka_redbull = Drink(
         name: "Vodaka & Redbull",
         category: DrinkCategory.Cocktail.toString(),
-        dateAdded: today.toString());
+        dateAdded: today);
     result = helper.insertDrink(vodka_redbull);
 
     // Beer
     Drink beer_ipa = Drink(
-        name: "IPA",
-        category: DrinkCategory.Beer.toString(),
-        dateAdded: today.toString());
+        name: "IPA", category: DrinkCategory.Beer.toString(), dateAdded: today);
     result = helper.insertDrink(beer_ipa);
     Drink beer_pale_ale = Drink(
         name: "Pale Ale",
         category: DrinkCategory.Beer.toString(),
-        dateAdded: today.toString());
+        dateAdded: today);
     result = helper.insertDrink(beer_pale_ale);
 
     // Wine
     Drink house_red = Drink(
         name: "House Red Wine",
         category: DrinkCategory.Wine.toString(),
-        dateAdded: today.toString());
+        dateAdded: today);
     result = helper.insertDrink(house_red);
     Drink house_white = Drink(
         name: "House White Wine",
         category: DrinkCategory.Wine.toString(),
-        dateAdded: today.toString());
+        dateAdded: today);
     result = helper.insertDrink(house_white);
 
     // Non-Alcoholic
     Drink water = Drink(
         name: "Water",
         category: DrinkCategory.NonAlcoholic.toString(),
-        dateAdded: today.toString());
+        dateAdded: today);
     result = helper.insertDrink(water);
     Drink coca_cola = Drink(
         name: "Coca Cola",
         category: DrinkCategory.NonAlcoholic.toString(),
-        dateAdded: today.toString());
+        dateAdded: today);
     result = helper.insertDrink(coca_cola);
   }
 }

@@ -1,6 +1,12 @@
+import 'dart:async';
+
+import 'package:barflashcards/app/cards/drink_screen.dart';
+import 'package:barflashcards/app/cards/flash_card.dart';
 import 'package:barflashcards/models/drink.dart';
 import 'package:barflashcards/models/drinkCategories.dart';
 import 'package:barflashcards/database/dbhelper.dart';
+import 'package:barflashcards/services/firebase_firestore_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class BeersComponent extends StatefulWidget {
@@ -12,74 +18,118 @@ class _BeersComponentState extends State<BeersComponent> {
   BuildContext _ctx;
   final scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  DbHelper helper = DbHelper();
   List<Drink> beers;
-  int count = 0;
+  FirebaseFirestoreService db = new FirebaseFirestoreService();
+  StreamSubscription<QuerySnapshot> drinksSub;
+
+  @override
+  void initState() {
+    super.initState();
+
+    beers = new List();
+
+    drinksSub?.cancel();
+    drinksSub = db.getBeerList().listen((QuerySnapshot snapshot) {
+      final List<Drink> drinks = snapshot.documents
+          .map((documentSnapshot) => Drink.fromObject(documentSnapshot.data))
+          .toList();
+
+      setState(() {
+        this.beers = drinks;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    drinksSub?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     _ctx = context;
-
-    if (beers == null) {
-      beers = List<Drink>();
-      getData();
-    }
-
     return Scaffold(
         appBar: AppBar(
           title: Text("Beers"),
         ),
         key: scaffoldKey,
-        body: Container(child: Center(child: beerListItems())),
+        body: Center(
+          child: ListView.builder(
+              itemCount: beers.length,
+              padding: const EdgeInsets.all(15.0),
+              itemBuilder: (context, position) {
+                return Column(
+                  children: <Widget>[
+                    Divider(height: 5.0),
+                    ListTile(
+                      title: Text(
+                        '${beers[position].name}',
+                        style: TextStyle(
+                          fontSize: 22.0,
+                          color: Colors.deepOrangeAccent,
+                        ),
+                      ),
+                      subtitle: Text(
+                        '${beers[position].description}',
+                        style: new TextStyle(
+                          fontSize: 18.0,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                      leading: Column(
+                        children: <Widget>[
+                          Padding(padding: EdgeInsets.all(10.0)),
+                          CircleAvatar(
+                            backgroundColor: Colors.blueAccent,
+                            radius: 15.0,
+                            child: Text(
+                              '${position + 1}',
+                              style: TextStyle(
+                                fontSize: 22.0,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                              icon: const Icon(Icons.remove_circle_outline),
+                              onPressed: () => _deleteDrink(
+                                  context, beers[position], position)),
+                        ],
+                      ),
+                      onTap: () => _navigateToDrink(context, beers[position]),
+                    ),
+                  ],
+                );
+              }),
+        ),
         floatingActionButton: FloatingActionButton(
-            onPressed: null,
+            onPressed: () => _createNewDrink(context),
             tooltip: "Add new Beer",
             child: new Icon(Icons.add)));
   }
 
-  ListView beerListItems() {
-    return ListView.builder(
-        itemCount: count,
-        itemBuilder: (BuildContext context, int position) {
-          return Card(
-              color: Colors.white,
-              elevation: 2.0,
-              child: ListTile(
-                  leading: CircleAvatar(
-                      backgroundColor: Colors.red,
-                      child: Text(this.beers[position].id.toString())),
-                  title: new Text(this.beers[position].name),
-                  subtitle: new Text(this.beers[position].description == null
-                      ? ""
-                      : this.beers[position].description),
-                  onTap: () {
-                    debugPrint("TAPPED: " + this.beers[position].id.toString());
-                  }));
-        });
-  }
-
-  void getData() {
-    final dbFuture = helper.initializeDb();
-    dbFuture.then((result) {
-      final getBeersFuture = helper.getDrinksByCategory(DrinkCategory.Beer);
-      getBeersFuture.then((result) {
-        debugPrint("GET BEERS FUTURE: $result");
-
-        List<Drink> beerList = List<Drink>();
-        count = result.length;
-
-        for (int i = 0; i < count; i++) {
-          beerList.add(Drink.fromObject(result[i]));
-          debugPrint(beerList[i].name);
-        }
-
-        setState(() {
-          beers = beerList;
-          count = count;
-        });
-
-        debugPrint("Items " + count.toString());
+  void _deleteDrink(BuildContext context, Drink drink, int position) async {
+    db.deleteDrink(drink.id).then((notes) {
+      setState(() {
+        beers.removeAt(position);
       });
     });
+  }
+
+  void _navigateToDrink(BuildContext context, Drink drink) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => DrinkScreen(drink)),
+    );
+  }
+
+  void _createNewDrink(BuildContext context) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => DrinkScreen(
+              Drink(name: null, description: '', category: '', dateAdded: null))),
+    );
   }
 }
