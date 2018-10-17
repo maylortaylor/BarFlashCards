@@ -1,4 +1,4 @@
-# import JSON to Firebase Database
+# Import JSON to Firebase Database
 
 This simple project was created thanks to a [tutorial from Hacker Noon](https://hackernoon.com/filling-cloud-firestore-with-data-3f67d26bd66e)
 
