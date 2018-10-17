@@ -22,6 +22,7 @@ class DbHelper {
   static DbHelper get() {
     return _dbInstance;
   }
+
   Future<Database> _getDb() async {
     if (!didInit) await initializeDb();
     return _database;
@@ -42,7 +43,7 @@ class DbHelper {
 
   void _createDb(Database db, int newVersion) async {
     debugPrint("CREATING Database ...");
-    
+
     await _createDrinksTable(db);
     await _createLogsTable(db);
     DbSeeder.seedDatabase(_dbInstance);
@@ -64,6 +65,7 @@ class DbHelper {
       txn.execute(CreateTableQueries.CREATE_DRINKS_TABLE);
     });
   }
+
   Future _createLogsTable(Database db) {
     debugPrint("CREATING table ${LogsTable.TABLE_NAME} ...");
 
@@ -71,6 +73,7 @@ class DbHelper {
       txn.execute(CreateTableQueries.CREATE_LOGS_TABLE);
     });
   }
+
   // CREATEs
   Future<int> insertDrink(Drink drink) async {
     Database dbClient = await DbHelper.get()._getDb();
@@ -87,7 +90,8 @@ class DbHelper {
   // READs
   Future<List> getDrinks() async {
     Database dbClient = await DbHelper.get()._getDb();
-    var result = await dbClient.rawQuery("SELECT * FROM ${DrinksTable.TABLE_NAME}");
+    var result =
+        await dbClient.rawQuery("SELECT * FROM ${DrinksTable.TABLE_NAME}");
     debugPrint("all drinks: " + result.toString());
     return result;
   }
@@ -95,16 +99,16 @@ class DbHelper {
   Future<List> getDrinksByCategory(DrinkCategory category) async {
     Database dbClient = await DbHelper.get()._getDb();
     var _cat = category.toString();
-    var result = await dbClient
-        .rawQuery("SELECT * FROM ${DrinksTable.TABLE_NAME} WHERE ${DrinksTable.CATEGORY} = '$_cat'");
+    var result = await dbClient.rawQuery(
+        "SELECT * FROM ${DrinksTable.TABLE_NAME} WHERE ${DrinksTable.CATEGORY} = '$_cat'");
     debugPrint("drinks by cats: " + result.toString());
     return result;
   }
 
   Future<int> getCount() async {
     Database dbClient = await DbHelper.get()._getDb();
-    var result = Sqflite.firstIntValue(
-        await dbClient.rawQuery("SELECT COUNT (*) FROM ${DrinksTable.TABLE_NAME}"));
+    var result = Sqflite.firstIntValue(await dbClient
+        .rawQuery("SELECT COUNT (*) FROM ${DrinksTable.TABLE_NAME}"));
     return result;
   }
 
@@ -119,8 +123,8 @@ class DbHelper {
   // DELETEs
   Future<int> deleteDrink(int id) async {
     Database dbClient = await DbHelper.get()._getDb();
-    var result =
-        await dbClient.rawDelete("DELETE FROM ${DrinksTable.TABLE_NAME} WHERE ${DrinksTable.ID} = $id");
+    var result = await dbClient.rawDelete(
+        "DELETE FROM ${DrinksTable.TABLE_NAME} WHERE ${DrinksTable.ID} = $id");
     return result;
   }
 
@@ -133,25 +137,20 @@ class DbHelper {
   // EXTRA
 
   Future<void> saveLogUsingDB(String transaction, Database db) async {
-  try {
-    int affectedRows =
-        await db.insert("Logs", getLog(transaction).toMap());
-    if (affectedRows > 0) {
+    try {
+      int affectedRows = await db.insert("Logs", getLog(transaction).toMap());
+      if (affectedRows > 0) {
 //      Successful
-    } else {
+      } else {
 //      UnSuccessful
+      }
+    } catch (e) {
+      print(e.toString());
     }
-  } catch (e) {
-    print(e.toString());
   }
-}
 
   Future closeDb() async {
     var dbClient = await DbHelper.get()._getDb();
     dbClient.close();
   }
-
-
-
-  
 }

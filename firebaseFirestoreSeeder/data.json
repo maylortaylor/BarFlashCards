@@ -1,0 +1,88 @@
+{
+	"drinks": {
+		"1": {
+			"name": "Whiskey & Coke",
+			"description": "Whiskey and a Coca-Cola",
+			"category": "cocktail",
+			"dateAdded": "10/16/2018"
+		},
+		"2": {
+			"name": "Vodka & Redbull",
+			"description": "Vodka and Redbull",
+			"category": "cocktail",
+			"dateAdded": "10/16/2018"
+		},
+		"3": {
+			"name": "Old Fashioned",
+			"description": "Made by muddling sugar with bitters, then adding alcohol, originally whiskey but now sometimes brandy, and finally a twist of citrus rind",
+			"category": "cocktail",
+			"dateAdded": "10/16/2018"
+		},
+		"4": {
+			"name": "Moscow Mule",
+			"description": "Vodka, spicy ginger beer, and lime juice, garnished with a slice or wedge of lime",
+			"category": "cocktail",
+			"dateAdded": "10/16/2018"
+		},
+		"5": {
+			"name": "IPA",
+			"description": "A hoppy beer style within the broader category of pale ale",
+			"category": "beer",
+			"dateAdded": "10/16/2018"
+		},
+		"6": {
+			"name": "Pale Ale",
+			"description": "An ale made with predominantly pale mal",
+			"category": "beer",
+			"dateAdded": "10/16/2018"
+		},
+		"7": {
+			"name": "Stout",
+			"description": "A dark beer, typically 7% or 8% alcohol by volume",
+			"category": "beer",
+			"dateAdded": "10/16/2018"
+		},
+		"8": {
+			"name": "Sour Beer",
+			"description": "An intentionally acidic, tart or sour taste",
+			"category": "beer",
+			"dateAdded": "10/16/2018"
+		},
+		"9": {
+			"name": "House Red Wine",
+			"description": "Cheap red wine",
+			"category": "wine",
+			"dateAdded": "10/16/2018"
+		},
+		"10": {
+			"name": "House White Wine",
+			"description": "Cheap white wine",
+			"category": "wine",
+			"dateAdded": "10/16/2018"
+		},
+		"11": {
+			"name": "House Cabernet Wine",
+			"description": "A decent red wine",
+			"category": "wine",
+			"dateAdded": "10/16/2018"
+		},
+		"12": {
+			"name": "Water",
+			"description": "The best thing on the planet",
+			"category": "non-alcoholic",
+			"dateAdded": "10/16/2018"
+		},
+		"13": {
+			"name": "Coca-Cola",
+			"description": "The classic Coca-cola",
+			"category": "non-alcoholic",
+			"dateAdded": "10/16/2018"
+		},
+		"14": {
+			"name": "Soda Water",
+			"description": "Bubbly and fizzy water",
+			"category": "non-alcoholic",
+			"dateAdded": "10/16/2018"
+		}
+	}
+}

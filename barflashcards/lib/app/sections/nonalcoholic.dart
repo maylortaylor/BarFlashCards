@@ -1,6 +1,11 @@
+import 'dart:async';
+
+import 'package:barflashcards/app/cards/drink_screen_component.dart';
 import 'package:barflashcards/models/drink.dart';
 import 'package:barflashcards/models/drinkCategories.dart';
 import 'package:barflashcards/database/dbhelper.dart';
+import 'package:barflashcards/services/firebase_firestore_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class NonAlcoholicsComponent extends StatefulWidget {
@@ -9,77 +14,95 @@ class NonAlcoholicsComponent extends StatefulWidget {
 }
 
 class _NonAlcoholicsComponentState extends State<NonAlcoholicsComponent> {
-  BuildContext _ctx;
   final scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  DbHelper helper = DbHelper();
-  List<Drink> beers;
-  int count = 0;
+  List<Drink> nonAlcoholics;
+  FirebaseFirestoreService db = new FirebaseFirestoreService();
+  StreamSubscription<QuerySnapshot> drinksSub;
+
+  @override
+  void initState() {
+    super.initState();
+
+    nonAlcoholics = new List();
+
+    drinksSub?.cancel();
+    drinksSub = db.getNonAlcoholicList().listen((QuerySnapshot snapshot) {
+      final List<Drink> drinks = snapshot.documents
+          .map((documentSnapshot) => Drink.fromObject(documentSnapshot.data))
+          .toList();
+
+      setState(() {
+        this.nonAlcoholics = drinks;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    drinksSub?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    _ctx = context;
-
-    if (beers == null) {
-      beers = List<Drink>();
-      getData();
-    }
-
     return Scaffold(
         appBar: AppBar(
-          title: Text("Non-Alcoholic"),
+          title: Text("Non-Alcoholics"),
         ),
         key: scaffoldKey,
-        body: Container(child: Center(child: nonAlcoholicListItems())),
-        floatingActionButton: FloatingActionButton(
-            onPressed: null,
-            tooltip: "Add new Non-Alcoholic",
-            child: new Icon(Icons.add)));
+        body: Center(
+          child: ListView.builder(
+              itemCount: nonAlcoholics.length,
+              padding: const EdgeInsets.all(15.0),
+              itemBuilder: (context, position) {
+                return Column(
+                  children: <Widget>[
+                    Divider(height: 5.0),
+                    ListTile(
+                      title: Text(
+                        '${nonAlcoholics[position].name}',
+                        style: TextStyle(
+                          fontSize: 22.0,
+                          color: Colors.deepOrangeAccent,
+                        ),
+                      ),
+                      subtitle: Text(
+                        '${nonAlcoholics[position].description}',
+                        style: new TextStyle(
+                          fontSize: 18.0,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                      leading: Column(
+                        children: <Widget>[
+                          Padding(padding: EdgeInsets.all(10.0)),
+                          CircleAvatar(
+                            backgroundColor: Colors.blueAccent,
+                            radius: 15.0,
+                            child: Text(
+                              '${position + 1}',
+                              style: TextStyle(
+                                fontSize: 22.0,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      onTap: () => _navigateToDrinkScreen(
+                          context, nonAlcoholics[position]),
+                    ),
+                  ],
+                );
+              }),
+        ));
   }
 
-  ListView nonAlcoholicListItems() {
-    return ListView.builder(
-        itemCount: count,
-        itemBuilder: (BuildContext context, int position) {
-          return Card(
-              color: Colors.white,
-              elevation: 2.0,
-              child: ListTile(
-                  leading: CircleAvatar(
-                      backgroundColor: Colors.red,
-                      child: Text(this.beers[position].id.toString())),
-                  title: new Text(this.beers[position].name),
-                  subtitle: new Text(this.beers[position].description == null
-                      ? ""
-                      : this.beers[position].description),
-                  onTap: () {
-                    debugPrint("TAPPED: " + this.beers[position].id.toString());
-                  }));
-        });
-  }
-
-  void getData() {
-    final dbFuture = helper.initializeDb();
-    dbFuture.then((result) {
-      final getBeersFuture = helper.getDrinksByCategory(DrinkCategory.Beer);
-      getBeersFuture.then((result) {
-        debugPrint("GET BEERS FUTURE: $result");
-
-        List<Drink> beerList = List<Drink>();
-        count = result.length;
-
-        for (int i = 0; i < count; i++) {
-          beerList.add(Drink.fromObject(result[i]));
-          debugPrint(beerList[i].name);
-        }
-
-        setState(() {
-          beers = beerList;
-          count = count;
-        });
-
-        debugPrint("Items " + count.toString());
-      });
-    });
+  void _navigateToDrinkScreen(BuildContext context, Drink drink) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => DrinkScreenComponent(drink)),
+    );
   }
 }

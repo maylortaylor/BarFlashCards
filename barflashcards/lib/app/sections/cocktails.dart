@@ -1,121 +1,108 @@
-import 'package:barflashcards/app/cards/flash_card.dart';
-import 'package:barflashcards/app/home/home_component.dart';
-import 'package:fluro/fluro.dart';
+import 'dart:async';
 
-import '../../helpers/color_helpers.dart';
+import 'package:barflashcards/app/cards/drink_screen_component.dart';
+import 'package:barflashcards/models/drink.dart';
+import 'package:barflashcards/models/drinkCategories.dart';
+import 'package:barflashcards/database/dbhelper.dart';
+import 'package:barflashcards/services/firebase_firestore_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:barflashcards/config/routes.dart';
 
 class CocktailsComponent extends StatefulWidget {
-  CocktailsComponent(
-      {String message = "Cocktails",
-      Color color = const Color(0xFFFFFFFF),
-      String result})
-      : this.message = message,
-        this.color = color,
-        this.result = result;
-
-  final String message;
-  final Color color;
-  final String result;
-
   @override
-  _CocktailsComponentState createState() => new _CocktailsComponentState();
+  State<StatefulWidget> createState() => _CocktailsComponentState();
 }
 
 class _CocktailsComponentState extends State<CocktailsComponent> {
-  BuildContext _ctx;
   final scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  List<Drink> cocktails;
+  FirebaseFirestoreService db = new FirebaseFirestoreService();
+  StreamSubscription<QuerySnapshot> drinksSub;
+
+  @override
+  void initState() {
+    super.initState();
+
+    cocktails = new List();
+
+    drinksSub?.cancel();
+    drinksSub = db.getCocktailList().listen((QuerySnapshot snapshot) {
+      final List<Drink> drinks = snapshot.documents
+          .map((documentSnapshot) => Drink.fromObject(documentSnapshot.data))
+          .toList();
+
+      setState(() {
+        this.cocktails = drinks;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    drinksSub?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    _ctx = context;
-
-    var cocktailsWidgets = <Widget>[
-      Padding(
-        padding: EdgeInsets.only(bottom: 35.0),
-        child: Image(
-            image: AssetImage("assets/images/barflashcard_logo.png"),
-            width: 200.0),
-      ),
-      menuButton(context, "Gin", "native"),
-      menuButton(context, "Tequila", "preset-from-left"),
-      menuButton(context, "Vodka", "preset-fade"),
-      menuButton(context, "Whiskey", "custom"),
-      Padding(
-        padding: EdgeInsets.only(top: 65.0, left: 60.0, right: 60.0),
-        child: Center(
-          child: ConstrainedBox(
-            constraints: BoxConstraints.tightFor(height: 60.0),
-            child: RaisedButton(
-              highlightColor: const Color(0x11FFFFFF),
-              splashColor: const Color(0x22FFFFFF),
-              child: Text(
-                "Start Over",
-                style: TextStyle(
-                  color: const Color(0xAA001133),
-                ),
-              ),
-              onPressed: () {
-                tappedStartOverButton(context, "native");
-              },
-            ),
-          ),
-        ),
-      )
-    ];
-
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Cocktails"),
-      ),
-      key: scaffoldKey,
-      body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: cocktailsWidgets,
-      )
-      ),
-      floatingActionButton: FloatingActionButton(
-            onPressed: null,
-            tooltip: "Add new Cocktail",
-            child: new Icon(Icons.add)) 
+        appBar: AppBar(
+          title: Text("Cocktails"),
+        ),
+        key: scaffoldKey,
+        body: Center(
+          child: ListView.builder(
+              itemCount: cocktails.length,
+              padding: const EdgeInsets.all(15.0),
+              itemBuilder: (context, position) {
+                return Column(
+                  children: <Widget>[
+                    Divider(height: 5.0),
+                    ListTile(
+                      title: Text(
+                        '${cocktails[position].name}',
+                        style: TextStyle(
+                          fontSize: 22.0,
+                          color: Colors.deepOrangeAccent,
+                        ),
+                      ),
+                      subtitle: Text(
+                        '${cocktails[position].description}',
+                        style: new TextStyle(
+                          fontSize: 18.0,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                      leading: Column(
+                        children: <Widget>[
+                          Padding(padding: EdgeInsets.all(10.0)),
+                          CircleAvatar(
+                            backgroundColor: Colors.blueAccent,
+                            radius: 15.0,
+                            child: Text(
+                              '${position + 1}',
+                              style: TextStyle(
+                                fontSize: 22.0,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      onTap: () =>
+                          _navigateToDrinkScreen(context, cocktails[position]),
+                    ),
+                  ],
+                );
+              }),
+        ));
+  }
+
+  void _navigateToDrinkScreen(BuildContext context, Drink drink) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => DrinkScreenComponent(drink)),
     );
   }
-}
-
-// helpers
-Widget menuButton(BuildContext context, String title, String key) {
-  return new Padding(
-    padding: new EdgeInsets.all(4.0),
-    child: new ConstrainedBox(
-      constraints: new BoxConstraints(minHeight: 42.0),
-      child: new RaisedButton(
-        highlightColor: const Color(0x11FFFFFF),
-        splashColor: const Color(0x22FFFFFF),
-        child: new Text(
-          title,
-          style: new TextStyle(
-            color: const Color(0xAA001133),
-          ),
-        ),
-        onPressed: () {
-          tappedFlashCardButton(context, key, title);
-        },
-      ),
-    ),
-  );
-}
-
-// actions
-void tappedFlashCardButton(BuildContext context, String key, String title) {
-  debugPrint('tapped flashcard -- $title -- $key');
-  Routes.navigateTo(
-      context: context, route: key, transition: TransitionType.native);
-}
-
-void tappedStartOverButton(BuildContext context, String key) {
-  print('tapped start over -- $key');
-  Routes.navigateTo(
-      context: context, route: key, transition: TransitionType.native);
 }

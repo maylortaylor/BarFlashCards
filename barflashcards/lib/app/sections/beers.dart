@@ -1,10 +1,7 @@
 import 'dart:async';
 
-import 'package:barflashcards/app/cards/drink_screen.dart';
-import 'package:barflashcards/app/cards/flash_card.dart';
+import 'package:barflashcards/app/cards/drink_screen_component.dart';
 import 'package:barflashcards/models/drink.dart';
-import 'package:barflashcards/models/drinkCategories.dart';
-import 'package:barflashcards/database/dbhelper.dart';
 import 'package:barflashcards/services/firebase_firestore_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +12,6 @@ class BeersComponent extends StatefulWidget {
 }
 
 class _BeersComponentState extends State<BeersComponent> {
-  BuildContext _ctx;
   final scaffoldKey = new GlobalKey<ScaffoldState>();
 
   List<Drink> beers;
@@ -48,7 +44,6 @@ class _BeersComponentState extends State<BeersComponent> {
 
   @override
   Widget build(BuildContext context) {
-    _ctx = context;
     return Scaffold(
         appBar: AppBar(
           title: Text("Beers"),
@@ -91,45 +86,21 @@ class _BeersComponentState extends State<BeersComponent> {
                               ),
                             ),
                           ),
-                          IconButton(
-                              icon: const Icon(Icons.remove_circle_outline),
-                              onPressed: () => _deleteDrink(
-                                  context, beers[position], position)),
                         ],
                       ),
-                      onTap: () => _navigateToDrink(context, beers[position]),
+                      onTap: () =>
+                          _navigateToDrinkScreen(context, beers[position]),
                     ),
                   ],
                 );
               }),
-        ),
-        floatingActionButton: FloatingActionButton(
-            onPressed: () => _createNewDrink(context),
-            tooltip: "Add new Beer",
-            child: new Icon(Icons.add)));
+        ));
   }
 
-  void _deleteDrink(BuildContext context, Drink drink, int position) async {
-    db.deleteDrink(drink.id).then((notes) {
-      setState(() {
-        beers.removeAt(position);
-      });
-    });
-  }
-
-  void _navigateToDrink(BuildContext context, Drink drink) async {
+  void _navigateToDrinkScreen(BuildContext context, Drink drink) async {
     await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => DrinkScreen(drink)),
-    );
-  }
-
-  void _createNewDrink(BuildContext context) async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => DrinkScreen(
-              Drink(name: null, description: '', category: '', dateAdded: null))),
+      MaterialPageRoute(builder: (context) => DrinkScreenComponent(drink)),
     );
   }
 }

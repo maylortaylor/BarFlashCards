@@ -1,6 +1,11 @@
+import 'dart:async';
+
+import 'package:barflashcards/app/cards/drink_screen_component.dart';
 import 'package:barflashcards/models/drink.dart';
 import 'package:barflashcards/models/drinkCategories.dart';
 import 'package:barflashcards/database/dbhelper.dart';
+import 'package:barflashcards/services/firebase_firestore_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class WinesComponent extends StatefulWidget {
@@ -9,77 +14,95 @@ class WinesComponent extends StatefulWidget {
 }
 
 class _WinesComponentState extends State<WinesComponent> {
-  BuildContext _ctx;
   final scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  DbHelper helper = DbHelper();
-  List<Drink> beers;
-  int count = 0;
+  List<Drink> wines;
+  FirebaseFirestoreService db = new FirebaseFirestoreService();
+  StreamSubscription<QuerySnapshot> drinksSub;
+
+  @override
+  void initState() {
+    super.initState();
+
+    wines = new List();
+
+    drinksSub?.cancel();
+    drinksSub = db.getWineList().listen((QuerySnapshot snapshot) {
+      final List<Drink> drinks = snapshot.documents
+          .map((documentSnapshot) => Drink.fromObject(documentSnapshot.data))
+          .toList();
+
+      setState(() {
+        this.wines = drinks;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    drinksSub?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    _ctx = context;
-
-    if (beers == null) {
-      beers = List<Drink>();
-      getData();
-    }
-
     return Scaffold(
         appBar: AppBar(
           title: Text("Wines"),
         ),
         key: scaffoldKey,
-        body: Container(child: Center(child: winesListItems())),
-        floatingActionButton: FloatingActionButton(
-            onPressed: null,
-            tooltip: "Add new Wine",
-            child: new Icon(Icons.add)));
+        body: Center(
+          child: ListView.builder(
+              itemCount: wines.length,
+              padding: const EdgeInsets.all(15.0),
+              itemBuilder: (context, position) {
+                return Column(
+                  children: <Widget>[
+                    Divider(height: 5.0),
+                    ListTile(
+                      title: Text(
+                        '${wines[position].name}',
+                        style: TextStyle(
+                          fontSize: 22.0,
+                          color: Colors.deepOrangeAccent,
+                        ),
+                      ),
+                      subtitle: Text(
+                        '${wines[position].description}',
+                        style: new TextStyle(
+                          fontSize: 18.0,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                      leading: Column(
+                        children: <Widget>[
+                          Padding(padding: EdgeInsets.all(10.0)),
+                          CircleAvatar(
+                            backgroundColor: Colors.blueAccent,
+                            radius: 15.0,
+                            child: Text(
+                              '${position + 1}',
+                              style: TextStyle(
+                                fontSize: 22.0,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      onTap: () =>
+                          _navigateToDrinkScreen(context, wines[position]),
+                    ),
+                  ],
+                );
+              }),
+        ));
   }
 
-  ListView winesListItems() {
-    return ListView.builder(
-        itemCount: count,
-        itemBuilder: (BuildContext context, int position) {
-          return Card(
-              color: Colors.white,
-              elevation: 2.0,
-              child: ListTile(
-                  leading: CircleAvatar(
-                      backgroundColor: Colors.red,
-                      child: Text(this.beers[position].id.toString())),
-                  title: new Text(this.beers[position].name),
-                  subtitle: new Text(this.beers[position].description == null
-                      ? ""
-                      : this.beers[position].description),
-                  onTap: () {
-                    debugPrint("TAPPED: " + this.beers[position].id.toString());
-                  }));
-        });
-  }
-
-  void getData() {
-    final dbFuture = helper.initializeDb();
-    dbFuture.then((result) {
-      final getBeersFuture = helper.getDrinksByCategory(DrinkCategory.Beer);
-      getBeersFuture.then((result) {
-        debugPrint("GET BEERS FUTURE: $result");
-
-        List<Drink> beerList = List<Drink>();
-        count = result.length;
-
-        for (int i = 0; i < count; i++) {
-          beerList.add(Drink.fromObject(result[i]));
-          debugPrint(beerList[i].name);
-        }
-
-        setState(() {
-          beers = beerList;
-          count = count;
-        });
-
-        debugPrint("Items " + count.toString());
-      });
-    });
+  void _navigateToDrinkScreen(BuildContext context, Drink drink) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => DrinkScreenComponent(drink)),
+    );
   }
 }

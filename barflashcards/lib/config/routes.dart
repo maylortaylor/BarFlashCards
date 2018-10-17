@@ -11,7 +11,6 @@ class Routes {
   static String beers = "/beers";
   static String wines = "/wines";
   static String nonAlcoholic = "/non-alcoholic";
-  static String flashCard = "/flashcard";
 
   static Router initRoutes() {
     _router.notFoundHandler = new Handler(
@@ -24,7 +23,6 @@ class Routes {
     _router.define(beers, handler: beersRouteHandler);
     _router.define(wines, handler: winesRouteHandler);
     _router.define(nonAlcoholic, handler: nonAlcoholicsRouteHandler);
-    _router.define(flashCard, handler: flashCardHandler);
 
     return _router;
   }

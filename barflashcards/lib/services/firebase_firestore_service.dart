@@ -57,7 +57,7 @@ class FirebaseFirestoreService {
   Stream<QuerySnapshot> getBeerList({int offset, int limit}) {
     Stream<QuerySnapshot> beers = Firestore.instance
         .collection('drinks')
-        .where("category", isEqualTo: "beers")
+        .where("category", isEqualTo: "beer")
         .snapshots();
     if (offset != null) {
       beers = beers.skip(offset);
@@ -68,6 +68,54 @@ class FirebaseFirestoreService {
     }
 
     return beers;
+  }
+
+  Stream<QuerySnapshot> getCocktailList({int offset, int limit}) {
+    Stream<QuerySnapshot> cocktails = Firestore.instance
+        .collection('drinks')
+        .where("category", isEqualTo: "cocktail")
+        .snapshots();
+    if (offset != null) {
+      cocktails = cocktails.skip(offset);
+    }
+
+    if (limit != null) {
+      cocktails = cocktails.take(limit);
+    }
+
+    return cocktails;
+  }
+
+  Stream<QuerySnapshot> getWineList({int offset, int limit}) {
+    Stream<QuerySnapshot> wines = Firestore.instance
+        .collection('drinks')
+        .where("category", isEqualTo: "wine")
+        .snapshots();
+    if (offset != null) {
+      wines = wines.skip(offset);
+    }
+
+    if (limit != null) {
+      wines = wines.take(limit);
+    }
+
+    return wines;
+  }
+
+  Stream<QuerySnapshot> getNonAlcoholicList({int offset, int limit}) {
+    Stream<QuerySnapshot> nonAlcoholics = Firestore.instance
+        .collection('drinks')
+        .where("category", isEqualTo: "non-alcoholic")
+        .snapshots();
+    if (offset != null) {
+      nonAlcoholics = nonAlcoholics.skip(offset);
+    }
+
+    if (limit != null) {
+      nonAlcoholics = nonAlcoholics.take(limit);
+    }
+
+    return nonAlcoholics;
   }
 
   Future<dynamic> updateDrink(Drink drink) async {
