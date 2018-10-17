@@ -1,11 +1,11 @@
+const uuidv4 = require('uuid/v4');
+const renameKeys = require('rename-keys');
 const admin = require('./node_modules/firebase-admin');
-const moment = require('./node_modules/moment');
 const serviceAccount = require('./service-key.json');
-
 const data = require('./data.json');
-
+const cleanedData = {};
+const collectionName = 'drinks';
 const databaseInstance = 'barflashcards-4b756';
-
 const settings = {timestampsInSnapshots: true};
 
 admin.initializeApp({
@@ -14,18 +14,32 @@ admin.initializeApp({
 });
 
 const firestore = admin.firestore();
-firestore.settings({timestampsInSnapshots: true});
+firestore.settings(settings);
 
-data &&
-	Object.keys(data).forEach(key => {
+// * rename object KEYS
+for (var key in data) {
+	if (data.hasOwnProperty(key)) {
+		var items = data[key];
+		var newItem = renameKeys(items, function(key, val) {
+			return uuidv4();
+		});
+		// console.log(newItem);
+		cleanedData[collectionName] = newItem;
+	}
+}
+
+// console.log(cleanedData);
+
+cleanedData &&
+	Object.keys(cleanedData).forEach(key => {
 		// console.log(key);
-		const nestedContent = data[key];
+		const nestedContent = cleanedData[key];
 
 		if (typeof nestedContent === 'object') {
 			// console.log(nestedContent);
 
 			Object.keys(nestedContent).forEach(docTitle => {
-				// console.log(docTitle);
+				console.log(docTitle);
 
 				// set dateAdded property
 				nestedContent[
