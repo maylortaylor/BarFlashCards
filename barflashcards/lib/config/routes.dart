@@ -7,6 +7,7 @@ class Routes {
 
   static String root = "/";
   static String login = "/login";
+  static String settings = "/settings";
   static String cocktails = "/cocktails";
   static String beers = "/beers";
   static String wines = "/wines";
@@ -17,8 +18,10 @@ class Routes {
         handlerFunc: (BuildContext context, Map<String, List<String>> params) {
       print("ROUTE WAS NOT FOUND !!!");
     });
+
     _router.define(root, handler: rootHandler);
     _router.define(login, handler: loginHandler);
+    _router.define(settings, handler: settingsHandler);
     _router.define(cocktails, handler: cocktailsRouteHandler);
     _router.define(beers, handler: beersRouteHandler);
     _router.define(wines, handler: winesRouteHandler);

@@ -5,6 +5,7 @@ import 'package:barflashcards/app/sections/beers.dart';
 import 'package:barflashcards/app/sections/wines.dart';
 import 'package:barflashcards/app/sections/nonalcoholic.dart';
 import 'package:barflashcards/app/sections/cocktails.dart';
+import 'package:barflashcards/app/settings/settings_component.dart';
 import 'package:barflashcards/models/drink.dart';
 import '../helpers/color_helpers.dart';
 import 'package:flutter/painting.dart';
@@ -21,6 +22,12 @@ var loginHandler = new Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
   debugPrint('login handler -- $params');
   return new LoginComponent();
+});
+
+var settingsHandler = new Handler(
+    handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+  debugPrint('settings handler -- $params');
+  return new SettingsComponent();
 });
 
 var winesRouteHandler = new Handler(

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:barflashcards/app/settings/app_settings.dart';
 import 'package:barflashcards/config/application.dart';
 import 'package:barflashcards/config/routes.dart';
 import 'package:barflashcards/database/dbhelper.dart';
@@ -10,11 +11,12 @@ import 'package:flutter/services.dart';
 
 class HomeComponent extends StatefulWidget {
   @override
-  State createState() => new HomeComponentState();
+  State createState() => new _HomeComponentState();
 }
 
-class HomeComponentState extends State<HomeComponent> {
+class _HomeComponentState extends State<HomeComponent> {
   DbHelper db;
+  Color _color;
 
   @override
   void dispose() {
@@ -27,6 +29,14 @@ class HomeComponentState extends State<HomeComponent> {
     super.initState();
     db = DbHelper();
     db.initializeDb();
+
+    setState(() {
+      final f = getColorSetting();
+      f.then((color) {
+        _color = color;
+        debugPrint("getting color! --> $_color");
+      });
+    });
   }
 
   @override
@@ -43,11 +53,20 @@ class HomeComponentState extends State<HomeComponent> {
       menuButton(context, "Wine", "wines", TransitionType.inFromLeft),
       menuButton(context, "Non-Alcoholic", "non-alcoholic",
           TransitionType.inFromBottom),
+      menuButton(context, "Settings", "settings", TransitionType.fadeIn),
       menuButton(context, "Login", "login", TransitionType.native)
     ];
 
+    setState(() {
+      final f = getColorSetting();
+      f.then((color) {
+        _color = color;
+        debugPrint("getting color! --> $_color");
+      });
+    });
+    debugPrint("returning HomeComponent! --> $_color");
     return Material(
-      color: Colors.deepPurple,
+      color: _color,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: menuWidgets,
@@ -101,4 +120,8 @@ class HomeComponentState extends State<HomeComponent> {
     Routes.navigateTo(
         context: context, route: route, transition: TransitionType.native);
   }
+}
+
+Future<Color> getColorSetting() async {
+  return AppSettings.get().getColorSettings();
 }
